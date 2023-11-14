@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TestPaperApi.Migrations
 {
-    public partial class initialCreateDb : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -70,6 +70,8 @@ namespace TestPaperApi.Migrations
                     Option3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsMultipleChoice = table.Column<bool>(type: "bit", nullable: false),
+                    Marks = table.Column<int>(type: "int", nullable: false),
                     Answers = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false)
                 },
@@ -84,7 +86,7 @@ namespace TestPaperApi.Migrations
                 {
                     QuestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SubjectId = table.Column<int>(type: "int", nullable: false),
+                    fk_SubjectId = table.Column<int>(type: "int", nullable: false),
                     fk_SubSubjectId = table.Column<int>(type: "int", nullable: false),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -92,6 +94,8 @@ namespace TestPaperApi.Migrations
                     Option3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsMultipleChoice = table.Column<bool>(type: "bit", nullable: false),
+                    Marks = table.Column<int>(type: "int", nullable: false),
                     Answers = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false)
                 },
@@ -106,8 +110,10 @@ namespace TestPaperApi.Migrations
                 {
                     SubjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    fk_UserId = table.Column<int>(type: "int", nullable: false),
                     SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubjectLabel = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    SubjectLabel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -137,8 +143,12 @@ namespace TestPaperApi.Migrations
                     SubSubjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fk_SubjectId = table.Column<int>(type: "int", nullable: false),
+                    fk_userId = table.Column<int>(type: "int", nullable: false),
                     SubSubjectName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalMarks = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isComplete = table.Column<bool>(type: "bit", nullable: false),
+                    isVisible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,6 +163,10 @@ namespace TestPaperApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },

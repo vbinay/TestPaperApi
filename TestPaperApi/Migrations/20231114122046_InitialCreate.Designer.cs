@@ -10,8 +10,8 @@ using TestPaperApi.Models;
 namespace TestPaperApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20221211122520_updatetable")]
-    partial class updatetable
+    [Migration("20231114122046_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -139,6 +139,12 @@ namespace TestPaperApi.Migrations
                     b.Property<string>("Answers")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsMultipleChoice")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Marks")
+                        .HasColumnType("int");
+
                     b.Property<string>("Option1")
                         .HasColumnType("nvarchar(max)");
 
@@ -180,6 +186,12 @@ namespace TestPaperApi.Migrations
 
                     b.Property<string>("Answers")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMultipleChoice")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Marks")
+                        .HasColumnType("int");
 
                     b.Property<string>("Option1")
                         .HasColumnType("nvarchar(max)");
