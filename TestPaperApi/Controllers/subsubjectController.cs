@@ -28,7 +28,6 @@ namespace TestPaperApi.Controllers
             {
                 var pep = await _dbContext.subSubjects.FirstAsync(x => x.SubSubjectId == paperId);
                 var questionslist = await _dbContext.subjectQuestions.ToListAsync();
-                var imgquestionslist = await _dbContext.SubjectImageQuestions.ToListAsync();
 
                 pepques.SubSubjectId = pep.SubSubjectId;
                 pepques.SubSubjectName = pep.SubSubjectName;
@@ -39,9 +38,8 @@ namespace TestPaperApi.Controllers
                 pepques.isComplete = pep.isComplete;
                 pepques.isVisible = pep.isVisible;
                 int cnt1 = questionslist.Count(x => x.fk_SubSubjectId == paperId);
-                int cnt2 = imgquestionslist.Count(x => x.fk_SubSubjectId == paperId);
 
-                pepques.QuestionCount = cnt1 + cnt2;
+                pepques.QuestionCount = cnt1;
             }
 
             return pepques;
@@ -59,7 +57,6 @@ namespace TestPaperApi.Controllers
                     .Where(x => x.fk_SubjectId==Convert.ToInt32(subjectId));
 
                 var questionslist = await _dbContext.subjectQuestions.ToListAsync();
-                var imgquestionslist = await _dbContext.SubjectImageQuestions.ToListAsync();
 
                 foreach (var sub in allpapers)
                 {
@@ -74,9 +71,8 @@ namespace TestPaperApi.Controllers
                     pepQues.TotalMarks = sub.TotalMarks;
 
                     int cnt1 = questionslist.Count(x => x.fk_SubSubjectId == sub.SubSubjectId);
-                    int cnt2 = imgquestionslist.Count(x => x.fk_SubSubjectId == sub.SubSubjectId);
 
-                    pepQues.QuestionCount = cnt1 + cnt2;
+                    pepQues.QuestionCount = cnt1;
 
                     paperslst.Add(pepQues);
                 }

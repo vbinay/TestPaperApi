@@ -12,6 +12,7 @@ namespace TestPaperApi.Models
         public int QuestionId { get; set; }
         public int fk_SubjectId { get; set; }
         public int fk_SubSubjectId { get; set; }
+        public byte[] ImageQuestion { get; set; }
         public string Question { get; set; }
         public string Option1 { get; set; }
         public string Option2 { get; set; }
@@ -22,6 +23,6 @@ namespace TestPaperApi.Models
         public int Marks { get; set; }
         public string Answers { get; set; }
         public int Order { get; set; }
-
+        public DateTime CreatedDate { get; set; }
     }
 }

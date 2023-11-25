@@ -13,7 +13,6 @@ namespace TestPaperApi.Models
         }
 
         public DbSet<Users> Users { get; set; }
-        public DbSet<SubjectImageQuestion> SubjectImageQuestions { get; set; }
         public DbSet<SubjectQuestions> subjectQuestions { get; set; }
         public DbSet<Subjects> subjects { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
