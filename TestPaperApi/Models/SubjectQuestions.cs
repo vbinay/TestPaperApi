@@ -24,5 +24,7 @@ namespace TestPaperApi.Models
         public string Answers { get; set; }
         public int Order { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string DifficultyLevel { get; set; }
+
     }
 }

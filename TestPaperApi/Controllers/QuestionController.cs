@@ -85,6 +85,7 @@ namespace TestPaperApi.Controllers
                 result.Answers = question.Answers;
                 result.fk_SubjectId = question.fk_SubjectId;
                 result.fk_SubSubjectId = question.fk_SubSubjectId;
+                result.DifficultyLevel = question.DifficultyLevel;
             }
 
             _dbContext.SaveChanges();
