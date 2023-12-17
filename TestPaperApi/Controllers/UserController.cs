@@ -84,7 +84,47 @@ namespace TestPaperApi.Controllers
             return Ok(UserToAdd);
         }
 
-       private string encodepassword(string password)
+        [EnableCors("AllowOrigin")]
+        [HttpPost]
+        public async Task<ActionResult<Users>> UpdateUser(Users user)
+        {
+
+            var addedUsers = _dbContext.Users.Where(x => x.UserName == user.UserName && x.Email == user.Email);
+
+            if (addedUsers.Any())
+            {
+                addedUsers.First().Email = user.Email;
+                addedUsers.First().FirstName = user.FirstName;
+                addedUsers.First().Gender = user.Gender;
+                addedUsers.First().IsActive = user.IsActive;
+                addedUsers.First().LastName = user.LastName;
+                addedUsers.First().PhoneNumber = user.PhoneNumber;
+                addedUsers.First().UserName = user.UserName;
+                addedUsers.First().UserType = user.UserType;
+
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return Ok("Updated");
+        }
+
+        [EnableCors("AllowOrigin")]
+        [HttpDelete]
+        public async Task<ActionResult<Users>> SaveUser(string  emailId)
+        {
+            var addedUsers = await _dbContext.Users.ToListAsync();
+            var resultset = addedUsers.Where(x => x.Email == emailId);
+
+            if(resultset != null)
+            {
+                _dbContext.Users.RemoveRange(resultset);
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return Ok("User Deleted Successfully");
+        }
+
+        private string encodepassword(string password)
         {
             var data = Encoding.UTF8.GetBytes(password);
             //return as base64 string
