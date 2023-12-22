@@ -56,7 +56,7 @@ namespace TestPaperApi.Controllers
         }
 
         [EnableCors("AllowOrigin")]
-        [HttpPost]
+        [HttpPost("SaveUser")]
         public async Task<ActionResult<Users>> SaveUser(Users user)
         {
             var UserToAdd = user;
@@ -85,7 +85,7 @@ namespace TestPaperApi.Controllers
         }
 
         [EnableCors("AllowOrigin")]
-        [HttpPost]
+        [HttpPost("UpdateUser")]
         public async Task<ActionResult<Users>> UpdateUser(Users user)
         {
 
