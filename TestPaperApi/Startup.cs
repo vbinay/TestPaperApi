@@ -36,7 +36,8 @@ namespace TestPaperApi
                 options.AddPolicy(name: "AllowOrigin",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost", "https://testworld.co.in",
+                            "https://testworlddemo.azurewebsites.net")
                                             .AllowAnyHeader()
                                             .AllowAnyMethod()
                                             .AllowAnyOrigin();
