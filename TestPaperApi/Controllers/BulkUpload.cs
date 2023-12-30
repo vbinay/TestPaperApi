@@ -60,7 +60,7 @@ namespace TestPaperApi.Controllers
                     if(!string.IsNullOrWhiteSpace(imagename) || !string.IsNullOrWhiteSpace(questiontext))
                     {
                         var subsubject = _dbContext.subSubjects.
-                            Where(x => x.fk_SubjectId == parentsubject.FirstOrDefault().SubjectId);
+                            Where(x => x.fk_SubjectGroupId == parentsubject.FirstOrDefault().SubjectId);
 
                         SubjectQuestions que = new SubjectQuestions();
                         que.fk_SubjectId = parentsubject.FirstOrDefault().SubjectId;
@@ -81,7 +81,6 @@ namespace TestPaperApi.Controllers
                         que.Option2 = worksheet.Cells[row, 6].Value.ToString();
                         que.Option3 = worksheet.Cells[row, 7].Value.ToString();
                         que.Option4 = worksheet.Cells[row, 8].Value.ToString();
-                        que.Option5 = worksheet.Cells[row, 9].Value != null? worksheet.Cells[row, 9].Value.ToString():string.Empty;
 
                         string multichoice = worksheet.Cells[row, 10].Value != null ? worksheet.Cells[row,10].Value.ToString() : string.Empty;
                         que.IsMultipleChoice = multichoice == "Y" ? true : false;
@@ -114,7 +113,7 @@ namespace TestPaperApi.Controllers
                 SubSubject sub = new SubSubject();
                 sub.fk_userId = 1;
                 sub.Duration = 3;
-                sub.fk_SubjectId = subjects.Count() > 0 ? subjects.FirstOrDefault().SubjectId : 0;
+                sub.fk_SubjectGroupId = subjects.Count() > 0 ? subjects.FirstOrDefault().SubjectId : 0;
                 sub.isComplete = false;
                 sub.isVisible = true;
                 sub.SubSubjectName = paper;

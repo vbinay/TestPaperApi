@@ -10,7 +10,7 @@ namespace TestPaperApi.Models
     {
         [Key]
         public int SubSubjectId { get; set; }
-        public int fk_SubjectId { get; set; }
+        public int fk_SubjectGroupId { get; set; }
         public int fk_userId { get; set; }
         public string SubSubjectName { get; set; }
         public Double Duration { get; set; }

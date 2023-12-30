@@ -23,7 +23,7 @@ namespace TestPaperApi.Controllers
         }
 
         [HttpGet]
-        public async Task<List<QuestionAll>> GetAllQuestions(int paperId)
+        public async Task<List<QuestionAll>> GetAllQuestions(int testid)
         {
             List<QuestionAll> quesList = new List<QuestionAll>();
 
@@ -31,7 +31,7 @@ namespace TestPaperApi.Controllers
 
             if(qList.Any())
             { 
-                var qpaperlist = qList.Where(x => x.fk_SubSubjectId == paperId);
+                var qpaperlist = qList.Where(x => x.fk_SubSubjectId == testid);
 
                 if(qpaperlist.Any())
                 {
@@ -46,7 +46,6 @@ namespace TestPaperApi.Controllers
                         pep.Option2 = item.Option2;
                         pep.Option3 = item.Option3;
                         pep.Option4 = item.Option4;
-                        pep.Option5 = item.Option5;
                         pep.Order = item.Order;
                         pep.QuestionId = item.QuestionId;
                         pep.textQuestion = item.Question;
@@ -57,8 +56,8 @@ namespace TestPaperApi.Controllers
             return quesList.OrderBy(x=>x.Order).ToList();
         }
        
-        [HttpPost("SaveText")]
-        public async Task<ActionResult<string>> SaveText(SubjectQuestions question)
+        [HttpPost("SaveTestQuestion")]
+        public async Task<ActionResult<string>> SaveTestQuestion(SubjectQuestions question)
         {
             await _dbContext.subjectQuestions.AddAsync(question);
             _dbContext.SaveChanges();
@@ -66,9 +65,18 @@ namespace TestPaperApi.Controllers
             return Ok("Saved Successfully");
         }
 
+        [HttpPost("SaveallQuestion")]
+        public async Task<ActionResult<string>> SaveallQuestion(List<SubjectQuestions> question)
+        {
+            await _dbContext.subjectQuestions.AddRangeAsync(question);
+            _dbContext.SaveChanges();
 
-        [HttpPost("UpdateText")]
-        public async Task<ActionResult<string>> UpdateText(SubjectQuestions question)
+            return Ok("Saved Successfully");
+        }
+
+
+        [HttpPost("UpdateTestQuestion")]
+        public async Task<ActionResult<string>> UpdateTestQuestion(SubjectQuestions question)
         {
             var result = await _dbContext.subjectQuestions.FindAsync(question.QuestionId);
 
@@ -77,7 +85,6 @@ namespace TestPaperApi.Controllers
                 result.Question = question.Question;
                 result.ImageQuestion = question.ImageQuestion;
                 result.Order = question.Order;
-                result.Option5 = question.Option5;
                 result.Option4 = question.Option4;
                 result.Option3 = question.Option3;
                 result.Option2 = question.Option2;

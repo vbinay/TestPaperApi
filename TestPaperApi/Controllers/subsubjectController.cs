@@ -20,114 +20,107 @@ namespace TestPaperApi.Controllers
             this._dbContext = databaseContext;
         }
 
-        [HttpGet("getpaperdetail")]
-        public async Task<PaperQuestions>  GetPaperDetail(int paperId)
+        [HttpGet("GetallTests")]
+        public async Task<List<SubSubject>> GetallTests()
         {
-            var pepques = new PaperQuestions();
-            if(paperId>0)
+            var subs = await _dbContext.subSubjects.ToListAsync();
+
+            if (subs.Any())
             {
-                var pep = await _dbContext.subSubjects.FirstAsync(x => x.SubSubjectId == paperId);
-                var questionslist = await _dbContext.subjectQuestions.ToListAsync();
-
-                pepques.SubSubjectId = pep.SubSubjectId;
-                pepques.SubSubjectName = pep.SubSubjectName;
-                pepques.TotalMarks = pep.TotalMarks;
-                pepques.Duration = pep.Duration;
-                pepques.fk_SubjectId = pep.fk_SubjectId;
-                pepques.fk_userId = pep.fk_userId;
-                pepques.isComplete = pep.isComplete;
-                pepques.isVisible = pep.isVisible;
-                int cnt1 = questionslist.Count(x => x.fk_SubSubjectId == paperId);
-
-                pepques.QuestionCount = cnt1;
+                return subs;
             }
-
-            return pepques;
+            else
+            {
+                return new List<SubSubject>();
+            }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<PaperQuestions>>> GetAllPapers(string subjectId)
+
+        [HttpGet("GetTestbyId")]
+        public async Task<ActionResult<SubSubject>> GetTestById(int subsubjectid)
         {
-            List<PaperQuestions> paperslst = new List<PaperQuestions>();
-            if (!string.IsNullOrWhiteSpace(subjectId))
+            var subs = await _dbContext.subSubjects.ToListAsync();
+            if (subs.Any())
             {
-                var allpapers = await _dbContext.subSubjects.ToListAsync();
-
-                var selectedpapers = allpapers
-                    .Where(x => x.fk_SubjectId==Convert.ToInt32(subjectId));
-
-                var questionslist = await _dbContext.subjectQuestions.ToListAsync();
-
-                foreach (var sub in allpapers)
+                var subfirst = subs.Where(x => x.SubSubjectId == subsubjectid);
+                if(subfirst.Any())
                 {
-                    PaperQuestions pepQues = new PaperQuestions();
-                    pepQues.Duration = sub.Duration;
-                    pepQues.fk_SubjectId = sub.fk_SubjectId;
-                    pepQues.fk_userId = sub.fk_userId;
-                    pepQues.isComplete = sub.isComplete;
-                    pepQues.isVisible = sub.isVisible;
-                    pepQues.SubSubjectId = sub.SubSubjectId;
-                    pepQues.SubSubjectName = sub.SubSubjectName;
-                    pepQues.TotalMarks = sub.TotalMarks;
-
-                    int cnt1 = questionslist.Count(x => x.fk_SubSubjectId == sub.SubSubjectId);
-
-                    pepQues.QuestionCount = cnt1;
-
-                    paperslst.Add(pepQues);
+                    return subfirst.FirstOrDefault();
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
+            else
+            {
+                return NoContent();
+            }
+        }
 
-            return paperslst;
+        [HttpGet("GetTestbyName")]
+        public async Task<ActionResult<SubSubject>> GetTestbyName(string subsubjectname)
+        {
+            var subs = await _dbContext.subSubjects.ToListAsync();
+            if (subs.Any())
+            {
+                var subfirst = subs.Where(x => x.SubSubjectName == subsubjectname);
+                if (subfirst.Any())
+                {
+                    return subfirst.FirstOrDefault();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NoContent();
+            }
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<string>> SavePaper(SubSubject paper)
+        public async Task<ActionResult<SubSubject>> SaveTest(SubSubject testdetail)
         {
-            var addedpapers = await _dbContext.subSubjects.ToListAsync();
+            var testavailable = await _dbContext.subSubjects.ToListAsync();
 
-            if (addedpapers.Any(x => x.fk_SubjectId == paper.fk_SubjectId && x.SubSubjectName == paper.SubSubjectName))
+            if(testavailable.Any())
             {
-                return NoContent();
+                var resultone = testavailable.Where(x => x.SubSubjectId == testdetail.SubSubjectId);
+                if(resultone.Any())
+                {
+                    resultone.First().CreatedDatetine = testdetail.CreatedDatetine;
+                    resultone.First().Duration = testdetail.Duration;
+                    resultone.First().fk_SubjectGroupId = testdetail.fk_SubjectGroupId;
+                    resultone.First().fk_userId = testdetail.fk_userId;
+                    resultone.First().isComplete = testdetail.isComplete;
+                    resultone.First().isVisible = testdetail.isVisible;
+                    resultone.First().SubSubjectName = testdetail.SubSubjectName;
+                }
+                else
+                {
+                    await _dbContext.subSubjects.AddAsync(testdetail);
+                }
             }
-            await _dbContext.subSubjects.AddAsync(paper);
+            
             await _dbContext.SaveChangesAsync();
             return Ok("Saved Succesfully");
         }
 
         [HttpDelete]
-        public async Task<ActionResult<string>> deletepaper(int paperid)
+        public async Task<ActionResult<string>> deletepaper(int subsubjectid)
         { 
             var addedpapers = await _dbContext.subSubjects.ToListAsync();
 
             if (addedpapers.Any())
             {
-                var selectedone = addedpapers.Where(x => x.SubSubjectId == paperid);
+                var selectedone = addedpapers.Where(x => x.SubSubjectId == subsubjectid);
                  _dbContext.subSubjects.Remove(selectedone.First());
                 await _dbContext.SaveChangesAsync();
             }
             return Ok("Deleted");
-        }
-
-
-        [HttpPost("updatepaper")]
-        public async Task<ActionResult<string>> UpdatePaper(SubSubject paper)
-        {
-            var addedpapers = await _dbContext.subSubjects.ToListAsync();
-
-            if (addedpapers.Any(x => x.SubSubjectId==paper.SubSubjectId))
-            {
-                addedpapers.First().isComplete = paper.isComplete;
-                addedpapers.First().isVisible = paper.isVisible;
-                await _dbContext.SaveChangesAsync();
-                return Ok("Updated Succesfully");
-            }
-            else
-            {
-                return NotFound();
-            }
-            
         }
     }
 }
