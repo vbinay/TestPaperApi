@@ -94,7 +94,12 @@ namespace TestPaperApi.Controllers
             }
             else
             {
-                var latestId = subpresent.OrderByDescending(x => x.SubjectGroupId).First().SubjectGroupId;
+                int latestId = 0;
+                if(subpresent.Count>0)
+                {
+                     latestId = subpresent.OrderByDescending(x => x.SubjectGroupId).First().SubjectGroupId;
+                }
+                
                 foreach (var subject in sub.SubjectIds)
                 {
                     var subgroupadd = new SubjectGroup();
