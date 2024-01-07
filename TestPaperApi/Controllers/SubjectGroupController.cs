@@ -58,6 +58,7 @@ namespace TestPaperApi.Controllers
 
             if (subs.Any())
             {
+
                 return subs.Where(x => x.SubjectGroupName == subjectgroupname).ToList();
             }
             else
@@ -79,23 +80,25 @@ namespace TestPaperApi.Controllers
                 {
                     var notpresent = resultset.Where(x => !sub.SubjectIds.Any(y => y == x.fk_SubjectId));
                     _dbContext.subjectGroup.RemoveRange(notpresent);
-
                     if (!resultset.Any(x => x.fk_SubjectId == subject))
                     {
                         var subgroupadd = new SubjectGroup();
+                        subgroupadd.SubjectGroupId = resultset.First().SubjectGroupId;
                         subgroupadd.fk_UserId = sub.fk_UserId;
                         subgroupadd.SubjectGroupName = sub.SubjectGroupName;
                         subgroupadd.CreatedDateTime = DateTime.Now;
                         subgroupadd.fk_SubjectId = subject;
-                        await _dbContext.subjectGroup.AddAsync(subgroupadd);
+                        _dbContext.subjectGroup.Update(subgroupadd);
                     }
                 }
             }
             else
             {
+                var latestId = subpresent.OrderByDescending(x => x.SubjectGroupId).First().SubjectGroupId;
                 foreach (var subject in sub.SubjectIds)
                 {
                     var subgroupadd = new SubjectGroup();
+                    subgroupadd.SubjectGroupId = latestId + 1;
                     subgroupadd.fk_UserId = sub.fk_UserId;
                     subgroupadd.SubjectGroupName = sub.SubjectGroupName;
                     subgroupadd.CreatedDateTime = DateTime.Now;

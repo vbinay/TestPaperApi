@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestPaperApi.Models;
 
 namespace TestPaperApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240107025137_drop_subjectgroup")]
+    partial class drop_subjectgroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,33 +130,6 @@ namespace TestPaperApi.Migrations
                     b.HasKey("SubSubjectId");
 
                     b.ToTable("subSubjects");
-                });
-
-            modelBuilder.Entity("TestPaperApi.Models.SubjectGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SubjectGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SubjectGroupName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("fk_SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("subjectGroup");
                 });
 
             modelBuilder.Entity("TestPaperApi.Models.SubjectQuestions", b =>

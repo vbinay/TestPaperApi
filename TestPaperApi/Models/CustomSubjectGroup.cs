@@ -13,4 +13,5 @@ namespace TestPaperApi.Models
         public string SubjectGroupName { get; set; }
         public DateTime CreatedDateTime { get; set; }
     }
+
 }
