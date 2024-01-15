@@ -21,7 +21,7 @@ namespace TestPaperApi.Models
         
         //Student
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<AttemptAnswer> attemptAnswers { get; set; }
+        public DbSet<StudentAttemptQuestions> StudentAttemptQuestions { get; set; }
         public DbSet<StudentAttempt> StudentAttempts { get; set; }
         public DbSet<StudentResult> StudentResults { get; set; }
 

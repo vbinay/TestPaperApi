@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace TestPaperApi.Models
 {
-    public class AttemptAnswer
+    public class StudentAttemptQuestions
     {
         [Key]
-        public int AttemptAnswerId { get; set; }
-        public int fk_AttemptId { get; set; }
+        public int StudentAttemptQuestionId { get; set; }
+        public int fk_StudentAttemptId { get; set; }
         public int fk_QuestionId { get; set; }
         public string selectedOption { get; set; }
-
+        public bool MarkforReview { get; set; }
+        public bool NotAttempted { get; set; }
     }
 }
