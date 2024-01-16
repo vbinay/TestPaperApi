@@ -19,6 +19,7 @@ namespace TestPaperApi.Models
     public class customStudentAttemptQuestion
     {
         public int StudentAttemptQuestionId { get; set; }
+        public int fk_attemptId { get; set; }
         public int fk_QuestionId { get; set; }
         public byte[] ImageQuestion { get; set; }
         public string Question { get; set; }

@@ -114,7 +114,7 @@ namespace TestPaperApi.Controllers
         }
 
         [HttpPost("AddStudentAttempt")]
-        public async Task<ActionResult<StudentAttemptandQuestionJoin>> AddStudentAttempt(StudentAttempt studentAttempt)
+        public async Task<ActionResult<StudentAttempt>> AddStudentAttempt(StudentAttempt studentAttempt)
         {
             StudentAttempt studAttempt = new StudentAttempt();
             studAttempt.fk_SubSubjectId = studentAttempt.fk_SubSubjectId;
@@ -125,20 +125,12 @@ namespace TestPaperApi.Controllers
             await _dbContext.StudentAttempts.AddAsync(studAttempt);
             await _dbContext.SaveChangesAsync();
 
-            var getltestid =await _dbContext.StudentAttempts.LastOrDefaultAsync();
+            var getltestid =await _dbContext.StudentAttempts.OrderByDescending(x=>x.AttemptId).FirstAsync();
 
             var stuattemptques = new StudentAttemptedQuestionsController(_dbContext);
             var questions = await stuattemptques.addQuestion(getltestid.AttemptId, studentAttempt.fk_SubSubjectId);
 
-            StudentAttemptandQuestionJoin obj = new StudentAttemptandQuestionJoin();
-            obj.AttemptId = getltestid.AttemptId;
-            obj.fk_SubSubjectId = getltestid.fk_SubSubjectId;
-            obj.fk_UserId = getltestid.fk_UserId;
-            obj.isComplete = getltestid.isComplete;
-            obj.isContinue = getltestid.isContinue;
-            obj.QuestionforTest = questions;
-
-            return obj;
+            return getltestid;
         }
 
         [HttpPost("UpdateStudentAttempt")]

@@ -63,21 +63,30 @@ namespace TestPaperApi.Controllers
         }
 
         [HttpPost("UpdateQuestionToStudentAttempt")]
-        public async Task<ActionResult<string>> UpdateQuestionToStudentAttempt(customStudentAttemptQuestion questiondata)
+        public async Task<ActionResult<List<customStudentAttemptQuestion>>> UpdateQuestionToStudentAttempt(customStudentAttemptQuestion questiondata)
         {
-            var getQuestion = await _dbContext.StudentAttemptQuestions.FindAsync(questiondata.StudentAttemptQuestionId);
-
-            if (getQuestion != null)
+            if(questiondata.fk_attemptId>0 && questiondata.StudentAttemptQuestionId==0  && questiondata.fk_QuestionId==0)
             {
-                getQuestion.MarkforReview = questiondata.MarkforReview;
-                getQuestion.NotAttempted = questiondata.NotAttempted;
-                getQuestion.selectedOption = questiondata.selectedOption;
-
-                await _dbContext.SaveChangesAsync();
+                return await GetCustomQuestionsSet(questiondata.fk_attemptId);
             }
+            else
+            {
+                var getQuestion = await _dbContext.StudentAttemptQuestions.FindAsync(questiondata.StudentAttemptQuestionId);
 
-            return Ok("Updated");
+                if (getQuestion != null)
+                {
+                    getQuestion.MarkforReview = questiondata.MarkforReview;
+                    getQuestion.NotAttempted = questiondata.NotAttempted;
+                    getQuestion.selectedOption = questiondata.selectedOption;
+
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                return await GetCustomQuestionsSet(questiondata.fk_attemptId);
+
+            }
         }
+
 
         private async Task<List<customStudentAttemptQuestion>> GetCustomQuestionsSet(int attemptid)
         {
@@ -88,19 +97,20 @@ namespace TestPaperApi.Controllers
                     (z, k) => new { z, k })
                     .Where(q => q.z.y.AttemptId == attemptid)
                     .Select(e => new customStudentAttemptQuestion
-                    {
-                        fk_QuestionId = e.z.x.fk_QuestionId,
-                        ImageQuestion = e.k.ImageQuestion,
-                        MarkforReview = e.z.x.MarkforReview,
-                        NotAttempted = e.z.x.NotAttempted,
-                        Option1 = e.k.Option1,
-                        Option2 = e.k.Option2,
-                        Option3 = e.k.Option3,
-                        Option4 = e.k.Option4,
-                        Question = e.k.Question,
-                        selectedOption = e.z.x.selectedOption,
-                        StudentAttemptQuestionId = e.z.x.StudentAttemptQuestionId
-                    });
+                     {
+                         fk_QuestionId = e.z.x.fk_QuestionId,
+                         ImageQuestion = e.k.ImageQuestion,
+                         MarkforReview = e.z.x.MarkforReview,
+                         NotAttempted = e.z.x.NotAttempted,
+                         Option1 = e.k.Option1,
+                         Option2 = e.k.Option2,
+                         Option3 = e.k.Option3,
+                         Option4 = e.k.Option4,
+                         Question = e.k.Question,
+                         selectedOption = e.z.x.selectedOption,
+                         StudentAttemptQuestionId = e.z.x.StudentAttemptQuestionId,
+                         fk_attemptId = attemptid
+                     });
 
             return await dataobj.ToListAsync();
         }
