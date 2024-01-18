@@ -1,19 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestPaperApi.Helper;
 using TestPaperApi.Models;
 
 namespace TestPaperApi.Controllers
 {
+    [EnableCors("AllowOrigin")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class StudentAttemptedQuestionsController : Controller
     {
         public readonly DatabaseContext _dbContext;
+        public readonly AttemptQuestionHelper _helper;
         public StudentAttemptedQuestionsController(DatabaseContext databaseContext)
         {
             this._dbContext = databaseContext;
+            this._helper = new AttemptQuestionHelper(this._dbContext);
         }
 
         [HttpGet("AttemptedTestQuestionsbyAttemptId")]
@@ -23,7 +30,7 @@ namespace TestPaperApi.Controllers
 
             if (subs.Any())
             {
-               return await GetCustomQuestionsSet(attemptId);
+               return await _helper.GetCustomQuestionsSet(attemptId);
             }
             else
             {
@@ -34,40 +41,16 @@ namespace TestPaperApi.Controllers
         [HttpPost("AddQuestionToStudentAttempt")]
         public async Task<ActionResult<List<customStudentAttemptQuestion>>> AddQuestionToStudentAttempt(int attemptid, int subsubjectid)
         {
-            return await addQuestion(attemptid, subsubjectid);
+            return await _helper.addQuestion(attemptid, subsubjectid);
         }
 
-        public async Task<List<customStudentAttemptQuestion>> addQuestion(int attemptid, int subsubjectid)
-        {
-            var getallQuestion = await _dbContext.subjectQuestions.ToListAsync();
-
-            var filterQuestions = getallQuestion.Where(x => x.fk_SubSubjectId == subsubjectid);
-
-            if (filterQuestions.Count() > 0)
-            {
-                foreach (var que in filterQuestions)
-                {
-                    var newentity = new StudentAttemptQuestions();
-                    newentity.fk_QuestionId = que.QuestionId;
-                    newentity.fk_StudentAttemptId = attemptid;
-                    newentity.MarkforReview = false;
-                    newentity.NotAttempted = true;
-                    newentity.selectedOption = null;
-
-                    await _dbContext.StudentAttemptQuestions.AddAsync(newentity);
-                }
-                await _dbContext.SaveChangesAsync();
-            }
-
-            return await GetCustomQuestionsSet(attemptid);
-        }
 
         [HttpPost("UpdateQuestionToStudentAttempt")]
         public async Task<ActionResult<List<customStudentAttemptQuestion>>> UpdateQuestionToStudentAttempt(customStudentAttemptQuestion questiondata)
         {
             if(questiondata.fk_attemptId>0 && questiondata.StudentAttemptQuestionId==0  && questiondata.fk_QuestionId==0)
             {
-                return await GetCustomQuestionsSet(questiondata.fk_attemptId);
+                return await _helper.GetCustomQuestionsSet(questiondata.fk_attemptId);
             }
             else
             {
@@ -82,37 +65,28 @@ namespace TestPaperApi.Controllers
                     await _dbContext.SaveChangesAsync();
                 }
 
-                return await GetCustomQuestionsSet(questiondata.fk_attemptId);
-
+                return await _helper.GetCustomQuestionsSet(questiondata.fk_attemptId);
             }
         }
 
 
-        private async Task<List<customStudentAttemptQuestion>> GetCustomQuestionsSet(int attemptid)
+        [HttpPost("BulkUpdateQuestionToStudentAttempt")]
+        public async Task<ActionResult<string>> BulkUpdateQuestionToStudentAttempt(customStudentAttemptQuestion[] questiondata)
         {
-            var dataobj = _dbContext.StudentAttemptQuestions.Join(_dbContext.StudentAttempts,
-                    x => x.fk_StudentAttemptId, y => y.AttemptId,
-                    (x, y) => new { x, y })
-                    .Join(_dbContext.subjectQuestions, z => z.x.fk_QuestionId, k => k.QuestionId,
-                    (z, k) => new { z, k })
-                    .Where(q => q.z.y.AttemptId == attemptid)
-                    .Select(e => new customStudentAttemptQuestion
-                     {
-                         fk_QuestionId = e.z.x.fk_QuestionId,
-                         ImageQuestion = e.k.ImageQuestion,
-                         MarkforReview = e.z.x.MarkforReview,
-                         NotAttempted = e.z.x.NotAttempted,
-                         Option1 = e.k.Option1,
-                         Option2 = e.k.Option2,
-                         Option3 = e.k.Option3,
-                         Option4 = e.k.Option4,
-                         Question = e.k.Question,
-                         selectedOption = e.z.x.selectedOption,
-                         StudentAttemptQuestionId = e.z.x.StudentAttemptQuestionId,
-                         fk_attemptId = attemptid
-                     });
+            foreach (var que in questiondata)
+            {
+                var getQuestion = await _dbContext.StudentAttemptQuestions.FindAsync(que.StudentAttemptQuestionId);
 
-            return await dataobj.ToListAsync();
+                if (getQuestion != null)
+                {
+                    getQuestion.MarkforReview = que.MarkforReview;
+                    getQuestion.NotAttempted = que.NotAttempted;
+                    getQuestion.selectedOption = que.selectedOption;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return Ok("Updated Questions Succesfully");
         }
 
     }

@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestPaperApi.Helper;
 using TestPaperApi.Models;
 
 namespace TestPaperApi.Controllers
 {
+    [EnableCors("AllowOrigin")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class TestAttemptController : ControllerBase
     {
         public readonly DatabaseContext _dbContext;
@@ -127,7 +132,7 @@ namespace TestPaperApi.Controllers
 
             var getltestid =await _dbContext.StudentAttempts.OrderByDescending(x=>x.AttemptId).FirstAsync();
 
-            var stuattemptques = new StudentAttemptedQuestionsController(_dbContext);
+            var stuattemptques = new AttemptQuestionHelper(_dbContext);
             var questions = await stuattemptques.addQuestion(getltestid.AttemptId, studentAttempt.fk_SubSubjectId);
 
             return getltestid;
