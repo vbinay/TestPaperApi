@@ -39,7 +39,7 @@ namespace TestPaperApi.Controllers
                     {
                         var pep = new QuestionAll();
                         pep.fk_SubjectId = item.fk_SubjectId;
-                        pep.fk_SubSubjectId = item.fk_SubSubjectId;
+                        pep.fk_SubSubjectId = item.fk_SubSubjectId>0? item.fk_SubSubjectId: pep.fk_SubSubjectId;
                         pep.imgQuestion = item.ImageQuestion;
                         pep.Answers = item.Answers;
                         pep.Option1 = item.Option1;
@@ -90,12 +90,31 @@ namespace TestPaperApi.Controllers
                 result.Option2 = question.Option2;
                 result.Option1 = question.Option1;
                 result.Answers = question.Answers;
+                result.Explanation = question.Explanation;
                 result.fk_SubjectId = question.fk_SubjectId;
                 result.fk_SubSubjectId = question.fk_SubSubjectId;
                 result.DifficultyLevel = question.DifficultyLevel;
             }
 
             _dbContext.SaveChanges();
+            return Ok("Updated Successfully");
+        }
+
+        [HttpDelete("DeleteTestQuestion")]
+        public async Task<ActionResult<string>> DeleteTestQuestion(int questionid)
+        {
+            var result = await _dbContext.subjectQuestions.FindAsync(questionid);
+
+            if (result != null)
+            {
+                _dbContext.subjectQuestions.Remove(result);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                return NotFound("Question Not Found");
+            }
+
             return Ok("Updated Successfully");
         }
     }

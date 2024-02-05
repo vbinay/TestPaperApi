@@ -14,5 +14,6 @@ namespace TestPaperApi.Models
         public int fk_SubSubjectId { get; set; }
         public bool isComplete { get; set; }
         public bool isContinue { get; set; }
+        public string AttemptTime { get; set; }
     }
 }

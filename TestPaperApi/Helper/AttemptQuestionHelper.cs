@@ -58,6 +58,7 @@ namespace TestPaperApi.Helper
                         Option3 = e.k.Option3,
                         Option4 = e.k.Option4,
                         Question = e.k.Question,
+                        Answers = e.k.Answers,
                         selectedOption = e.z.x.selectedOption,
                         StudentAttemptQuestionId = e.z.x.StudentAttemptQuestionId,
                         fk_attemptId = attemptid

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestPaperApi.Models;
 
 namespace TestPaperApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240120184417_attemptimeadded")]
+    partial class attemptimeadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,9 +124,6 @@ namespace TestPaperApi.Migrations
                     b.Property<int>("TotalMarks")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalQuestion")
-                        .HasColumnType("int");
-
                     b.Property<int>("fk_SubjectGroupId")
                         .HasColumnType("int");
 
@@ -183,9 +182,6 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DifficultyLevel")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ImageQuestion")

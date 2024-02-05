@@ -149,6 +149,7 @@ namespace TestPaperApi.Controllers
                 studsttempt.fk_UserId = studentAttempt.fk_UserId;
                 studsttempt.isComplete = studentAttempt.isComplete;
                 studsttempt.isContinue = studentAttempt.isContinue;
+                studentAttempt.AttemptTime = studentAttempt.AttemptTime;
             }
 
              _dbContext.StudentAttempts.Update(studsttempt);

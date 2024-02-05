@@ -18,6 +18,7 @@ namespace TestPaperApi.Models
         public string Option2 { get; set; }
         public string Option3 { get; set; }
         public string Option4 { get; set; }
+        public string Explanation { get; set; }
         public bool IsMultipleChoice { get; set; }
         public int Marks { get; set; }
         public string Answers { get; set; }

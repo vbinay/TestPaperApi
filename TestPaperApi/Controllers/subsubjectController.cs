@@ -98,6 +98,7 @@ namespace TestPaperApi.Controllers
                     resultone.First().isComplete = testdetail.isComplete;
                     resultone.First().isVisible = testdetail.isVisible;
                     resultone.First().SubSubjectName = testdetail.SubSubjectName;
+                    resultone.First().TotalQuestion = testdetail.TotalQuestion;
                 }
                 else
                 {
@@ -117,6 +118,10 @@ namespace TestPaperApi.Controllers
             if (addedpapers.Any())
             {
                 var selectedone = addedpapers.Where(x => x.SubSubjectId == subsubjectid);
+                if(_dbContext.subjectQuestions.Any(x=>x.fk_SubSubjectId== subsubjectid))
+                {
+                    return Json(new { status = "Error", Message = "Cannot be deleted since Questions are already added" });
+                }
                  _dbContext.subSubjects.Remove(selectedone.First());
                 await _dbContext.SaveChangesAsync();
             }

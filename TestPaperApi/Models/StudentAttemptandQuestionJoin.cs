@@ -28,6 +28,7 @@ namespace TestPaperApi.Models
         public string Option3 { get; set; }
         public string Option4 { get; set; }
         public string selectedOption { get; set; }
+        public string Answers { get; set; }
         public bool MarkforReview { get; set; }
         public bool NotAttempted { get; set; }
     }
