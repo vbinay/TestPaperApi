@@ -18,6 +18,7 @@ namespace TestPaperApi.Models
         public string Option4 { get; set; }
         public string Option5 { get; set; }
         public string Answers { get; set; }
+        public string Explanation { get; set; }
         public int Order { get; set; }
     }
 }

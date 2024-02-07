@@ -22,40 +22,54 @@ namespace TestPaperApi.Controllers
             this._dbContext = databaseContext;
         }
 
-        [HttpGet]
-        public async Task<List<QuestionAll>> GetAllQuestions(int testid)
+        [HttpGet("GetAllQuestionsbyTestId")]
+        public async Task<List<QuestionAll>> GetAllQuestionsbyTestId(int testid)
         {
             List<QuestionAll> quesList = new List<QuestionAll>();
 
-            var qList = await _dbContext.subjectQuestions.ToListAsync();
+            var qList =await _dbContext.subjectQuestions.Where(x => x.fk_SubSubjectId == testid).ToListAsync();
 
-            if(qList.Any())
-            { 
-                var qpaperlist = qList.Where(x => x.fk_SubSubjectId == testid);
-
-                if(qpaperlist.Any())
+            if (qList.Any())
+            {
+                foreach (var item in qList)
                 {
-                    foreach(var item in qpaperlist)
-                    {
-                        var pep = new QuestionAll();
-                        pep.fk_SubjectId = item.fk_SubjectId;
-                        pep.fk_SubSubjectId = item.fk_SubSubjectId>0? item.fk_SubSubjectId: pep.fk_SubSubjectId;
-                        pep.imgQuestion = item.ImageQuestion;
-                        pep.Answers = item.Answers;
-                        pep.Option1 = item.Option1;
-                        pep.Option2 = item.Option2;
-                        pep.Option3 = item.Option3;
-                        pep.Option4 = item.Option4;
-                        pep.Order = item.Order;
-                        pep.QuestionId = item.QuestionId;
-                        pep.textQuestion = item.Question;
-                    }
+                    var pep = new QuestionAll();
+                    pep.fk_SubjectId = item.fk_SubjectId;
+                    pep.fk_SubSubjectId = item.fk_SubSubjectId > 0 ? item.fk_SubSubjectId : pep.fk_SubSubjectId;
+                    pep.imgQuestion = item.ImageQuestion;
+                    pep.Answers = item.Answers;
+                    pep.Option1 = item.Option1;
+                    pep.Option2 = item.Option2;
+                    pep.Option3 = item.Option3;
+                    pep.Option4 = item.Option4;
+                    pep.Explanation = item.Explanation;
+                    pep.Order = item.Order;
+                    pep.QuestionId = item.QuestionId;
+                    pep.textQuestion = item.Question;
+
+                    quesList.Add(pep);
                 }
             }
 
             return quesList.OrderBy(x=>x.Order).ToList();
         }
-       
+
+        [HttpGet("GetQuestionbyQuestionId")]
+        public async Task<ActionResult<SubjectQuestions>> GetQuestionbyQuestionId(int questionid)
+        {
+            var result = await _dbContext.subjectQuestions.FindAsync(questionid);
+
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                return NotFound("Question Not Found");
+            }
+        }
+
+
         [HttpPost("SaveTestQuestion")]
         public async Task<ActionResult<string>> SaveTestQuestion(SubjectQuestions question)
         {

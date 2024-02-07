@@ -56,6 +56,23 @@ namespace TestPaperApi.Controllers
         }
 
         [EnableCors("AllowOrigin")]
+        [HttpGet("ActivateUserEmailLink")]
+        public async Task<ActionResult<string>> ActivateUserEmailLink(string UniqueCode)
+        {
+            if (!string.IsNullOrWhiteSpace(UniqueCode))
+            {
+                var selectedUser = await _dbContext.Users.Where(x=>x.ActivationLink== UniqueCode).FirstOrDefaultAsync();
+
+                if (selectedUser != null)
+                {
+                    selectedUser.Isvalid = true;
+                    return Ok("User is Validated Succesfully");
+                }
+            }
+            return null;
+        }
+
+        [EnableCors("AllowOrigin")]
         [HttpPost("SaveUser")]
         public async Task<ActionResult<Users>> SaveUser(Users user)
         {
@@ -77,6 +94,7 @@ namespace TestPaperApi.Controllers
                 throw new Exception("Password Empty");
             }
 
+            UserToAdd.Isvalid = false;
             UserToAdd.Password = encodepassword(UserToAdd.Password);
 
             await _dbContext.Users.AddAsync(UserToAdd);
@@ -101,7 +119,7 @@ namespace TestPaperApi.Controllers
                 addedUsers.First().PhoneNumber = user.PhoneNumber;
                 addedUsers.First().UserName = user.UserName;
                 addedUsers.First().UserType = user.UserType;
-
+                addedUsers.First().Isvalid = user.Isvalid;
             }
 
             await _dbContext.SaveChangesAsync();

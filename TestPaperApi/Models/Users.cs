@@ -18,7 +18,9 @@ namespace TestPaperApi.Models
         public string Gender { get; set; }
         public string UserType { get; set; }
         public bool IsActive { get; set; }
+        public bool Isvalid { get; set; }
         public string PhoneNumber { get; set; }
+        public string ActivationLink { get; set; }
 
     }
 }
