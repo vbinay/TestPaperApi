@@ -99,6 +99,7 @@ namespace TestPaperApi.Controllers
                     resultone.First().isVisible = testdetail.isVisible;
                     resultone.First().SubSubjectName = testdetail.SubSubjectName;
                     resultone.First().TotalQuestion = testdetail.TotalQuestion;
+                    resultone.First().IsFree = testdetail.IsFree;
                 }
                 else
                 {

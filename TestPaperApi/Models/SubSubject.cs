@@ -19,5 +19,6 @@ namespace TestPaperApi.Models
         public bool isComplete { get; set; } //gives whether question writing is completed 
         public bool isVisible { get; set; } // whether it should be visible to student 
         public DateTime CreatedDatetine { get; set; }
+        public bool IsFree { get; set; }
     }
 }
