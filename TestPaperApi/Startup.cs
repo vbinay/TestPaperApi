@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestPaperApi.Models;
+using TestPaperApi.Services;
 
 namespace TestPaperApi
 {
@@ -29,6 +30,9 @@ namespace TestPaperApi
         public void ConfigureServices(IServiceCollection services)
         {
             var connectiostring = Configuration.GetConnectionString("DbConnection");
+
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, Services.MailService>();
             services.AddControllers();
             services.AddDbContext<DatabaseContext>(opt => opt.UseSqlServer(connectiostring));
             services.AddCors(options =>

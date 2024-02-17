@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestPaperApi.Models;
+using TestPaperApi.Services;
 
 namespace TestPaperApi.Controllers
 {
@@ -16,9 +17,11 @@ namespace TestPaperApi.Controllers
     public class UserController : ControllerBase
     {
         public readonly DatabaseContext _dbContext;
-        public UserController(DatabaseContext databaseContext)
+        private readonly IMailService mailService;
+        public UserController(DatabaseContext databaseContext, IMailService mailService)
         {
             this._dbContext = databaseContext;
+            this.mailService = mailService;
         }
 
         
@@ -66,8 +69,14 @@ namespace TestPaperApi.Controllers
                 if (selectedUser != null)
                 {
                     selectedUser.Isvalid = true;
-                    return Ok("User is Validated Succesfully");
+                    _dbContext.Users.Update(selectedUser);
+                    await _dbContext.SaveChangesAsync();
+                    return Redirect("https://testworld.co.in/login");
                 }
+            }
+            else
+            {
+                throw new Exception("Invalid Activation code Sent");
             }
             return null;
         }
@@ -81,10 +90,9 @@ namespace TestPaperApi.Controllers
             {
                 UserToAdd.UserType = "student";
             }
-
             var addedUsers =await  _dbContext.Users.ToListAsync();
 
-            if(addedUsers.Any(x=>x.UserName==user.UserName && x.Email==user.Email))
+            if (addedUsers.Any(x => x.PhoneNumber == user.PhoneNumber && x.Email == user.Email))
             {
                 throw new Exception("Duplicate Record Exist");
             }
@@ -96,6 +104,17 @@ namespace TestPaperApi.Controllers
 
             UserToAdd.Isvalid = false;
             UserToAdd.Password = encodepassword(UserToAdd.Password);
+            var unq = Guid.NewGuid().ToString();
+            UserToAdd.ActivationLink = unq;
+
+            string createurl = "https://worldtestapi.azurewebsites.net/api/User/ActivateUserEmailLink?UniqueCode="+ unq;
+
+            var mailreq = new MailRequest();
+            mailreq.ToEmail = UserToAdd.Email;
+            mailreq.Subject = "Activation Link";
+            mailreq.Body = createurl;
+
+            await this.mailService.SendEmailAsync(mailreq);
 
             await _dbContext.Users.AddAsync(UserToAdd);
             await  _dbContext.SaveChangesAsync();
