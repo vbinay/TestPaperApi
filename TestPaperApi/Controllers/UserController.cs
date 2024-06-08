@@ -33,7 +33,7 @@ namespace TestPaperApi.Controllers
 
         [EnableCors("AllowOrigin")]
         [HttpGet("ValidateUser")]
-        public async Task<ActionResult<Users>> ValidateUser(string username, string password)
+        public async Task<ActionResult<CustomUser>> ValidateUser(string username, string password)
         {
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
@@ -45,7 +45,25 @@ namespace TestPaperApi.Controllers
 
                 if(selectedUser.Any())
                 {
-                    return selectedUser.FirstOrDefault();
+                    var userr = new CustomUser();
+                    userr.Email = selectedUser.FirstOrDefault().Email;
+                    userr.FirstName = selectedUser.FirstOrDefault().FirstName;
+                    userr.Gender = selectedUser.FirstOrDefault().Gender;
+                    userr.IsActive = selectedUser.FirstOrDefault().IsActive;
+                    userr.Isvalid = selectedUser.FirstOrDefault().Isvalid;
+                    userr.LastName = selectedUser.FirstOrDefault().LastName;
+                    userr.PhoneNumber = selectedUser.FirstOrDefault().PhoneNumber;
+                    userr.UserId = selectedUser.FirstOrDefault().UserId;
+                    userr.UserName= selectedUser.FirstOrDefault().UserName;
+                    userr.UserType = selectedUser.FirstOrDefault().UserType;
+
+                    var ressub = _dbContext.Subscriptions.Where(x => x.fk_userId == selectedUser.FirstOrDefault().UserId);
+                    if(ressub != null && ressub.Count()>0)
+                    {
+                        userr.isSubscribed = true;
+                        userr.SubscriptionStartDate = ressub.First().SubscriptionStartDate;
+                    }
+                    return userr;
                 }
                 else
                 {

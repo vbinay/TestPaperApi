@@ -32,6 +32,7 @@ namespace TestPaperApi
             var connectiostring = Configuration.GetConnectionString("DbConnection");
 
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.Configure<PaymentSetting>(Configuration.GetSection("PaymentSetting"));
             services.AddTransient<IMailService, Services.MailService>();
             services.AddControllers();
             services.AddDbContext<DatabaseContext>(opt => opt.UseSqlServer(connectiostring));
