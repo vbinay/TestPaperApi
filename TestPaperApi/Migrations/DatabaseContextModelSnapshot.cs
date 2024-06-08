@@ -119,6 +119,9 @@ namespace TestPaperApi.Migrations
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
 
+                    b.Property<int>("NegativeMarking")
+                        .HasColumnType("int");
+
                     b.Property<string>("SubSubjectName")
                         .HasColumnType("nvarchar(max)");
 
@@ -216,6 +219,15 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Section")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Topic")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("fk_SubSubjectId")

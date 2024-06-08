@@ -3,23 +3,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TestPaperApi.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "attemptAnswers",
+                name: "StudentAttemptQuestions",
                 columns: table => new
                 {
-                    AttemptAnswerId = table.Column<int>(type: "int", nullable: false)
+                    StudentAttemptQuestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    fk_AttemptId = table.Column<int>(type: "int", nullable: false),
+                    fk_StudentAttemptId = table.Column<int>(type: "int", nullable: false),
                     fk_QuestionId = table.Column<int>(type: "int", nullable: false),
-                    selectedOption = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    selectedOption = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MarkforReview = table.Column<bool>(type: "bit", nullable: false),
+                    NotAttempted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_attemptAnswers", x => x.AttemptAnswerId);
+                    table.PrimaryKey("PK_StudentAttemptQuestions", x => x.StudentAttemptQuestionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -29,9 +31,10 @@ namespace TestPaperApi.Migrations
                     AttemptId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fk_UserId = table.Column<int>(type: "int", nullable: false),
-                    fk_SubjectId = table.Column<int>(type: "int", nullable: false),
                     fk_SubSubjectId = table.Column<int>(type: "int", nullable: false),
-                    isComplete = table.Column<bool>(type: "bit", nullable: false)
+                    isComplete = table.Column<bool>(type: "bit", nullable: false),
+                    isContinue = table.Column<bool>(type: "bit", nullable: false),
+                    AttemptTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,27 +60,20 @@ namespace TestPaperApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubjectImageQuestions",
+                name: "subjectGroup",
                 columns: table => new
                 {
-                    QuestionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    SubjectGroupId = table.Column<int>(type: "int", nullable: false),
+                    fk_UserId = table.Column<int>(type: "int", nullable: false),
                     fk_SubjectId = table.Column<int>(type: "int", nullable: false),
-                    fk_SubSubjectId = table.Column<int>(type: "int", nullable: false),
-                    Question = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Option1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Option2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Option3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Option4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Option5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsMultipleChoice = table.Column<bool>(type: "bit", nullable: false),
-                    Marks = table.Column<int>(type: "int", nullable: false),
-                    Answers = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Order = table.Column<int>(type: "int", nullable: false)
+                    SubjectGroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubjectImageQuestions", x => x.QuestionId);
+                    table.PrimaryKey("PK_subjectGroup", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,16 +84,19 @@ namespace TestPaperApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fk_SubjectId = table.Column<int>(type: "int", nullable: false),
                     fk_SubSubjectId = table.Column<int>(type: "int", nullable: false),
+                    ImageQuestion = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Option4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Option5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Explanation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsMultipleChoice = table.Column<bool>(type: "bit", nullable: false),
                     Marks = table.Column<int>(type: "int", nullable: false),
                     Answers = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Order = table.Column<int>(type: "int", nullable: false)
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DifficultyLevel = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -142,13 +141,16 @@ namespace TestPaperApi.Migrations
                 {
                     SubSubjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    fk_SubjectId = table.Column<int>(type: "int", nullable: false),
+                    fk_SubjectGroupId = table.Column<int>(type: "int", nullable: false),
                     fk_userId = table.Column<int>(type: "int", nullable: false),
                     SubSubjectName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalMarks = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Duration = table.Column<double>(type: "float", nullable: false),
+                    TotalMarks = table.Column<int>(type: "int", nullable: false),
+                    TotalQuestion = table.Column<int>(type: "int", nullable: false),
                     isComplete = table.Column<bool>(type: "bit", nullable: false),
-                    isVisible = table.Column<bool>(type: "bit", nullable: false)
+                    isVisible = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDatetine = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFree = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,7 +170,10 @@ namespace TestPaperApi.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Isvalid = table.Column<bool>(type: "bit", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivationLink = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -179,7 +184,7 @@ namespace TestPaperApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "attemptAnswers");
+                name: "StudentAttemptQuestions");
 
             migrationBuilder.DropTable(
                 name: "StudentAttempts");
@@ -188,7 +193,7 @@ namespace TestPaperApi.Migrations
                 name: "StudentResults");
 
             migrationBuilder.DropTable(
-                name: "SubjectImageQuestions");
+                name: "subjectGroup");
 
             migrationBuilder.DropTable(
                 name: "subjectQuestions");

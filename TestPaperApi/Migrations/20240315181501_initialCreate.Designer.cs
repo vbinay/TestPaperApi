@@ -10,8 +10,8 @@ using TestPaperApi.Models;
 namespace TestPaperApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240115215400_addtablestoExamAttempt")]
-    partial class addtablestoExamAttempt
+    [Migration("20240315181501_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,9 @@ namespace TestPaperApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AttemptTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("fk_SubSubjectId")
                         .HasColumnType("int");
@@ -115,10 +118,16 @@ namespace TestPaperApi.Migrations
                     b.Property<double>("Duration")
                         .HasColumnType("float");
 
+                    b.Property<bool>("IsFree")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SubSubjectName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalMarks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuestion")
                         .HasColumnType("int");
 
                     b.Property<int>("fk_SubjectGroupId")
@@ -179,6 +188,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DifficultyLevel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ImageQuestion")
@@ -274,6 +286,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ActivationLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -284,6 +299,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Isvalid")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")

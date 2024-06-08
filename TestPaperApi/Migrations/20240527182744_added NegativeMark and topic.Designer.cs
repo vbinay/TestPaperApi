@@ -10,8 +10,8 @@ using TestPaperApi.Models;
 namespace TestPaperApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240107025137_drop_subjectgroup")]
-    partial class drop_subjectgroup
+    [Migration("20240527182744_added NegativeMark and topic")]
+    partial class addedNegativeMarkandtopic
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,27 +21,6 @@ namespace TestPaperApi.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TestPaperApi.Models.AttemptAnswer", b =>
-                {
-                    b.Property<int>("AttemptAnswerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("fk_AttemptId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("selectedOption")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AttemptAnswerId");
-
-                    b.ToTable("attemptAnswers");
-                });
-
             modelBuilder.Entity("TestPaperApi.Models.StudentAttempt", b =>
                 {
                     b.Property<int>("AttemptId")
@@ -49,10 +28,10 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("fk_SubSubjectId")
-                        .HasColumnType("int");
+                    b.Property<string>("AttemptTime")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("fk_SubjectId")
+                    b.Property<int>("fk_SubSubjectId")
                         .HasColumnType("int");
 
                     b.Property<int>("fk_UserId")
@@ -61,9 +40,39 @@ namespace TestPaperApi.Migrations
                     b.Property<bool>("isComplete")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("isContinue")
+                        .HasColumnType("bit");
+
                     b.HasKey("AttemptId");
 
                     b.ToTable("StudentAttempts");
+                });
+
+            modelBuilder.Entity("TestPaperApi.Models.StudentAttemptQuestions", b =>
+                {
+                    b.Property<int>("StudentAttemptQuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("MarkforReview")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("NotAttempted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("fk_QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_StudentAttemptId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("selectedOption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("StudentAttemptQuestionId");
+
+                    b.ToTable("StudentAttemptQuestions");
                 });
 
             modelBuilder.Entity("TestPaperApi.Models.StudentResult", b =>
@@ -109,10 +118,19 @@ namespace TestPaperApi.Migrations
                     b.Property<double>("Duration")
                         .HasColumnType("float");
 
+                    b.Property<bool>("IsFree")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NegativeMarking")
+                        .HasColumnType("int");
+
                     b.Property<string>("SubSubjectName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalMarks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuestion")
                         .HasColumnType("int");
 
                     b.Property<int>("fk_SubjectGroupId")
@@ -132,6 +150,33 @@ namespace TestPaperApi.Migrations
                     b.ToTable("subSubjects");
                 });
 
+            modelBuilder.Entity("TestPaperApi.Models.SubjectGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubjectGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubjectGroupName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("fk_SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("subjectGroup");
+                });
+
             modelBuilder.Entity("TestPaperApi.Models.SubjectQuestions", b =>
                 {
                     b.Property<int>("QuestionId")
@@ -146,6 +191,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DifficultyLevel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ImageQuestion")
@@ -173,6 +221,15 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Section")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Topic")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("fk_SubSubjectId")
@@ -241,6 +298,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ActivationLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -251,6 +311,9 @@ namespace TestPaperApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Isvalid")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")

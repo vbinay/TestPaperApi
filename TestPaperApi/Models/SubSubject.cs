@@ -20,5 +20,6 @@ namespace TestPaperApi.Models
         public bool isVisible { get; set; } // whether it should be visible to student 
         public DateTime CreatedDatetine { get; set; }
         public bool IsFree { get; set; }
+        public int NegativeMarking { get; set; }
     }
 }

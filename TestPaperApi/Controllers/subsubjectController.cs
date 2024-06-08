@@ -100,6 +100,8 @@ namespace TestPaperApi.Controllers
                     resultone.First().SubSubjectName = testdetail.SubSubjectName;
                     resultone.First().TotalQuestion = testdetail.TotalQuestion;
                     resultone.First().IsFree = testdetail.IsFree;
+                    resultone.First().TotalMarks = testdetail.TotalMarks;
+                    resultone.First().NegativeMarking = testdetail.NegativeMarking;
                 }
                 else
                 {
