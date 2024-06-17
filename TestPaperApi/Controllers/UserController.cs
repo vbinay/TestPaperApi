@@ -104,18 +104,18 @@ namespace TestPaperApi.Controllers
         public async Task<ActionResult<Users>> SaveUser(Users user)
         {
             var UserToAdd = user;
-            if(string.IsNullOrWhiteSpace(UserToAdd.UserType))
+            if (string.IsNullOrWhiteSpace(UserToAdd.UserType))
             {
                 UserToAdd.UserType = "student";
             }
-            var addedUsers =await  _dbContext.Users.ToListAsync();
+            var addedUsers = await _dbContext.Users.ToListAsync();
 
             if (addedUsers.Any(x => x.PhoneNumber == user.PhoneNumber && x.Email == user.Email))
             {
                 throw new Exception("Duplicate Record Exist");
             }
 
-            if(string.IsNullOrWhiteSpace(UserToAdd.Password))
+            if (string.IsNullOrWhiteSpace(UserToAdd.Password))
             {
                 throw new Exception("Password Empty");
             }
@@ -125,7 +125,7 @@ namespace TestPaperApi.Controllers
             var unq = Guid.NewGuid().ToString();
             UserToAdd.ActivationLink = unq;
 
-            string createurl = "https://worldtestapi.azurewebsites.net/api/User/ActivateUserEmailLink?UniqueCode="+ unq;
+            string createurl = "https://api.testworld.co.in/api/User/ActivateUserEmailLink?UniqueCode=" + unq;
 
             var mailreq = new MailRequest();
             mailreq.ToEmail = UserToAdd.Email;
@@ -135,7 +135,7 @@ namespace TestPaperApi.Controllers
             await this.mailService.SendEmailAsync(mailreq);
 
             await _dbContext.Users.AddAsync(UserToAdd);
-            await  _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return Ok(UserToAdd);
         }
 
